@@ -16,6 +16,8 @@ RUN git clone git://git.openwrt.org/openwrt/openwrt.git -b openwrt-22.03 /home/o
 WORKDIR /home/openwrt/openwrt
 
 RUN svn export https://github.com/vernesong/OpenClash/trunk/luci-app-openclash package/luci-app-openclash && \
+    git clone --depth 1 https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon && \
+    git clone --depth 1 https://github.com/jerrykuku/luci-app-argon-config package/luci-app-argon-config && \
     scripts/feeds update -a && \
     scripts/feeds install -a
 
@@ -25,6 +27,8 @@ RUN mkdir -p files/etc/openclash/core && \
     rm -f clash-linux-amd64.tar.gz && \
     mv clash files/etc/openclash/core/clash && \
     rm -rf clash-linux-amd64
+
+RUN sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci/Makefile
 
 COPY .config .
 COPY --chmod=0777 build.sh .
